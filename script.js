@@ -1,21 +1,44 @@
 const STORAGE_KEY = "characterArchive";
 
+// Every field a character can have
 const FIELDS = [
-  { key: "name", label: "Name", required: true },
-  { key: "universe", label: "Universe / world" },
-  { key: "tagline", label: "Tagline" },
-  { key: "titles", label: "Titles", multiline: true },
+  { key: "name", label: "Character name", required: true },
+  { key: "universe", label: "Universe", required: true },
+  { key: "role", label: "Role / title" },
+  { key: "portrait", label: "Portrait image URL" },
   { key: "age", label: "Age" },
   { key: "height", label: "Height" },
   { key: "weight", label: "Weight" },
-  { key: "hairColour", label: "Hair colour" },
   { key: "eyeColour", label: "Eye colour" },
-  { key: "voice", label: "Voice", multiline: true },
-  { key: "hobbies", label: "Hobbies", multiline: true },
-  { key: "abilities", label: "Abilities", multiline: true },
-  { key: "weaknesses", label: "Weaknesses", multiline: true },
-  { key: "relationships", label: "Relationships", multiline: true }
+  { key: "hairColour", label: "Hair colour" },
+  { key: "tagline", label: "Tagline", wide: true },
+  { key: "personality", label: "Personality", wide: true, area: true },
+  { key: "abilities", label: "Abilities", wide: true, area: true },
+  { key: "backstory", label: "Backstory", wide: true, area: true },
+  { key: "likes", label: "Likes", wide: true, area: true },
+  { key: "dislikes", label: "Dislikes", wide: true, area: true },
+  { key: "relationships", label: "Relationships", wide: true, area: true },
+  { key: "funFacts", label: "Fun facts", wide: true, area: true },
+  { key: "clothes", label: "Favourite clothes", wide: true, area: true },
+  { key: "voice", label: "Voice", wide: true, area: true },
+  { key: "talents", label: "Miscellaneous talents", wide: true, area: true },
+  { key: "weapons", label: "Weapons", wide: true, area: true }
 ];
+
+// Shown in the stat row at the top of the detail pop-up
+const STATS = [
+  { key: "age", label: "Age" },
+  { key: "height", label: "Height" },
+  { key: "weight", label: "Weight" },
+  { key: "eyeColour", label: "Eyes" },
+  { key: "hairColour", label: "Hair" }
+];
+
+// Shown in the two-column grid, excluding the header and stat fields
+const SECTION_KEYS = new Set([
+  "personality", "abilities", "backstory", "likes", "dislikes",
+  "relationships", "funFacts", "clothes", "voice", "talents", "weapons"
+]);
 
 let characters = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 let editingId = null;
@@ -31,6 +54,8 @@ const formFields = document.getElementById("form-fields");
 const formTitle = document.getElementById("form-title");
 const detailModal = document.getElementById("detail-modal");
 const detailTitle = document.getElementById("detail-title");
+const detailUniverse = document.getElementById("detail-universe");
+const detailTagline = document.getElementById("detail-tagline");
 const detailBody = document.getElementById("detail-body");
 
 function save() {
@@ -45,10 +70,11 @@ function escapeHtml(text) {
 
 function buildForm() {
   formFields.innerHTML = FIELDS.map(f => {
-    const input = f.multiline
-      ? `<textarea name="${f.key}" rows="2"></textarea>`
+    const label = f.required ? `${f.label} *` : f.label;
+    const input = f.area
+      ? `<textarea name="${f.key}" rows="3"></textarea>`
       : `<input name="${f.key}"${f.required ? " required" : ""}>`;
-    return `<label>${f.label}${input}</label>`;
+    return `<label class="${f.wide ? "wide" : ""}">${label}${input}</label>`;
   }).join("");
 }
 
@@ -72,7 +98,7 @@ function render() {
   list.innerHTML = matches.map(c => `
     <article class="card" data-id="${c.id}">
       <h3>${escapeHtml(c.name)}</h3>
-      <p class="universe">${escapeHtml(c.universe || "Unassigned")}</p>
+      <span class="universe">${escapeHtml(c.universe || "Unassigned")}</span>
       <p>${escapeHtml(c.tagline || "No tagline yet.")}</p>
     </article>
   `).join("");
@@ -82,7 +108,7 @@ function render() {
 
 function openForm(character = null) {
   editingId = character ? character.id : null;
-  formTitle.textContent = character ? "Edit dossier" : "New dossier";
+  formTitle.textContent = character ? "Edit character" : "New character";
   form.reset();
   FIELDS.forEach(f => {
     form.elements[f.key].value = character ? (character[f.key] || "") : "";
@@ -100,13 +126,34 @@ function openDetail(id) {
   const c = characters.find(x => x.id === id);
   if (!c) return;
   viewingId = id;
+
+  detailUniverse.textContent = c.universe || "Unassigned";
   detailTitle.textContent = c.name;
-  detailBody.innerHTML = FIELDS.filter(f => f.key !== "name").map(f => `
-    <div class="detail-row">
-      <span class="detail-label">${f.label}</span>
-      <p>${escapeHtml(c[f.key]) || "—"}</p>
+  detailTagline.textContent = c.tagline || "";
+  detailTagline.hidden = !c.tagline;
+
+  const stats = STATS.map(s => `
+    <div class="stat">
+      <span class="stat-label">${s.label}</span>
+      <span class="stat-value">${escapeHtml(c[s.key]) || "—"}</span>
     </div>
   `).join("");
+
+  const sections = FIELDS.filter(f => SECTION_KEYS.has(f.key)).map(f => {
+    const value = c[f.key];
+    return `
+      <div>
+        <span class="section-label">${f.label}</span>
+        <p class="section-value ${value ? "" : "empty-value"}">${value ? escapeHtml(value) : "No record entered."}</p>
+      </div>
+    `;
+  }).join("");
+
+  detailBody.innerHTML = `
+    <div class="stats">${stats}</div>
+    <div class="sections">${sections}</div>
+  `;
+
   detailModal.hidden = false;
 }
 
