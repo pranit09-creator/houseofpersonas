@@ -40,7 +40,11 @@ const SECTION_KEYS = new Set([
   "relationships", "funFacts", "clothes", "voice", "talents", "weapons"
 ]);
 
-let characters = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+// Load saved characters, giving any old entry without an ID a new one
+let characters = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")
+  .map((c, i) => (c.id ? c : { ...c, id: Date.now() + i }));
+localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+
 let editingId = null;
 let viewingId = null;
 
