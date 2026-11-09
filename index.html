@@ -3,14 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>House of Personas</title>
+  <title>Character Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>House of Personas</h1>
-  <p>Welcome to my original characters.</p>
+  <header class="top">
+    <div class="title-row">
+      <div>
+        <p class="eyebrow">THE COLLECTION</p>
+        <h1>Character archive</h1>
+      </div>
+      <button id="open-add" class="btn-primary">+ Add character</button>
+    </div>
 
-  <button id="btn">Click me</button>
+    <div class="toolbar">
+      <input id="search" type="text" placeholder="Search names, worlds, lore...">
+      <select id="universe-filter">
+        <option value="">All universes</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <div id="list" class="grid"></div>
+    <p id="empty" class="empty" hidden>No dossiers found in this corner of the archive.</p>
+  </main>
+
+  <div id="modal" class="modal" hidden>
+    <form id="add-form" class="modal-box">
+      <h2>New dossier</h2>
+      <label>Name
+        <input name="name" required>
+      </label>
+      <label>Universe / world
+        <input name="universe" placeholder="e.g. Jujutsu Kaisen, Original">
+      </label>
+      <label>Description
+        <textarea name="description" rows="4"></textarea>
+      </label>
+      <div class="modal-actions">
+        <button type="button" id="cancel" class="btn-ghost">Cancel</button>
+        <button type="submit" class="btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
 
   <script src="script.js"></script>
 </body>
