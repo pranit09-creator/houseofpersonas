@@ -5,7 +5,6 @@ const FIELDS = [
   { key: "name", label: "Character name", required: true },
   { key: "universe", label: "Universe", required: true },
   { key: "role", label: "Role / title" },
-  { key: "portrait", label: "Portrait image URL" },
   { key: "age", label: "Age" },
   { key: "height", label: "Height" },
   { key: "weight", label: "Weight" },
