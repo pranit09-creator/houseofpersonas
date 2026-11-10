@@ -22,6 +22,7 @@
       --radius-pill: 999px;
     }
 
+    html { color-scheme: dark; scroll-behavior: smooth; scroll-padding-top: 90px; }
     * { box-sizing: border-box; }
 
     body {
@@ -38,8 +39,6 @@
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
-
-    html { scroll-behavior: smooth; }
 
     /* Navigation */
     .nav {
@@ -123,7 +122,7 @@
     .hero-link span { color: var(--accent); }
 
     .hero-mark {
-      position: absolute; right: 9%; top: 50%; transform: translateY(-50%);
+      position: absolute; right: 9%; top: 50%;
       text-align: right; pointer-events: none;
       transform: translate(0, -50%);
       margin-right: 36px;
@@ -218,6 +217,41 @@
       font-family: "IBM Plex Mono", monospace; font-size: 13px;
     }
 
+    /* About section */
+    .about {
+      border-top: 1px solid var(--line);
+      background: linear-gradient(180deg, #0a0907 0%, var(--bg) 100%);
+      padding: 110px 24px 120px;
+    }
+    .about-inner { max-width: 760px; margin: 0 auto; }
+    .about-kicker {
+      font-family: "IBM Plex Mono", monospace; font-size: 11px;
+      letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent);
+      margin: 0 0 24px;
+    }
+    .about h2 {
+      font-family: "Playfair Display", serif; font-weight: 400;
+      font-size: 52px; line-height: 1.1; margin: 0 0 16px;
+    }
+    .about-lead {
+      font-family: "Playfair Display", serif; font-style: italic;
+      font-size: 22px; line-height: 1.5; color: var(--accent);
+      margin: 0 0 48px; padding-bottom: 40px; border-bottom: 1px solid var(--line);
+    }
+    .about p {
+      font-size: 16px; line-height: 1.85; color: var(--muted);
+      margin: 0 0 22px;
+    }
+    .about p.about-closing {
+      font-family: "Playfair Display", serif; font-style: italic;
+      font-size: 26px; line-height: 1.4; color: var(--text);
+      margin: 48px 0 0;
+    }
+    .about p.about-welcome {
+      font-family: "Playfair Display", serif; font-size: 22px;
+      color: var(--text); margin: 16px 0 0;
+    }
+
     /* Pop-ups */
     .modal {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
@@ -247,6 +281,12 @@
       padding-bottom: 32px; border-bottom: 1px solid var(--line);
     }
 
+    /* Detail pop-up: wider, for paragraph-length entries */
+    #detail-modal .modal-box {
+      max-width: 1100px;
+      padding: 56px 64px;
+    }
+
     .stats {
       display: grid; grid-template-columns: repeat(5, 1fr);
       padding: 28px 0; border-bottom: 1px solid var(--line);
@@ -262,7 +302,7 @@
 
     .sections {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 36px 48px;
+      gap: 36px 56px;
     }
     .section-label {
       display: block; font-family: "IBM Plex Mono", monospace; font-size: 11px;
@@ -277,6 +317,7 @@
 
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
 
+    /* Add / edit form */
     #form-fields {
       display: grid; grid-template-columns: 1fr 1fr; gap: 28px 28px;
     }
@@ -312,24 +353,38 @@
       min-height: 56px;
     }
 
+    /* Keep autofilled form inputs dark */
+    #form-fields input:-webkit-autofill,
+    #form-fields input:-webkit-autofill:hover,
+    #form-fields input:-webkit-autofill:focus,
+    #form-fields textarea:-webkit-autofill,
+    #form-fields textarea:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px var(--surface-2) inset;
+      -webkit-text-fill-color: var(--text);
+      caret-color: var(--text);
+      transition: background-color 9999s ease-in-out 0s;
+    }
+
     @media (max-width: 900px) {
       .nav { padding: 18px 24px; }
       .nav-links a:not(.nav-cta) { display: none; }
       .hero { padding: 72px 24px; }
       .hero h1 { font-size: 60px; }
       .hero-mark, .ring { display: none; }
+      #detail-modal .modal-box, #form-modal .modal-box { max-width: 100%; }
     }
 
     @media (max-width: 720px) {
       .hero h1 { font-size: 44px; }
-      .archive h2, h1.archive-title { font-size: 38px; }
+      .archive h2, h1.archive-title, .about h2 { font-size: 38px; }
+      .about p.about-closing { font-size: 22px; }
       .toolbar { flex-direction: column; align-items: stretch; }
       .modal-box { padding: 32px 24px; gap: 24px; }
       .modal-box h2 { font-size: 34px; }
       .stats { grid-template-columns: repeat(2, 1fr); row-gap: 20px; }
       .stat { padding: 0; border-left: none; }
       .sections, #form-fields { grid-template-columns: 1fr; }
-      #form-modal .modal-box { padding: 32px 24px; }
+      #form-modal .modal-box, #detail-modal .modal-box { padding: 32px 24px; }
     }
   </style>
 </head>
@@ -380,6 +435,30 @@
     <div id="list" class="grid"></div>
     <p id="empty" class="empty" hidden>No dossiers found in this corner of the archive.</p>
   </main>
+
+  <section class="about" id="about">
+    <div class="about-inner">
+      <p class="about-kicker">About the house</p>
+      <h2>About House of Personas</h2>
+      <p class="about-lead">Every character has a story. Every story has a creator.</p>
+
+      <p>House of Personas is a personal archive dedicated to the characters, fictional worlds, and narratives created by Pranit Mishra. What began as an exercise of imagination has grown into an ever-expanding collection of original characters, each with their own identities, histories, abilities, relationships, motivations, and places within the worlds they inhabit.</p>
+
+      <p>Behind every persona is an idea that was given room to grow. Some characters begin with a name, others with an ability, a personality, or a single defining moment. Over time, these fragments develop into something much larger: individuals with complex personalities, carefully constructed backgrounds, meaningful relationships, personal conflicts, and stories that extend far beyond their introductions.</p>
+
+      <p>Among the notable creations housed within this archive are Kaiser Whitethorne, a character defined by extraordinary vector manipulation and an equally distinctive personality; Ash Gray, whose place in the Hunter world is shaped by his formidable abilities and complicated history; and Kirin D. Archangel, an original character belonging to a separate One Piece-inspired universe. Each represents a different creative direction, with an identity and narrative that belong entirely to their respective worlds.</p>
+
+      <p>House of Personas exists to document these creations properly. It brings together character dossiers, visual references, personal histories, abilities, affiliations, relationships, and the finer details that might otherwise be lost across countless notes and conversations. It is an organised record of an ongoing creative process, allowing each character to be explored individually while preserving the larger world around them.</p>
+
+      <p>Importantly, these stories are not interchangeable. Every universe has its own continuity, rules, atmosphere, and cast of characters. Each deserves to be preserved on its own terms.</p>
+
+      <p>Ultimately, House of Personas is a reflection of its creator's imagination. It is a place to build, revisit, refine, and preserve fictional identities without limiting where a story can go or how far an idea can develop.</p>
+
+      <p class="about-closing">This is not simply a catalogue of characters.<br>It is a home for the worlds behind them.</p>
+
+      <p class="about-welcome">Welcome to the House.</p>
+    </div>
+  </section>
 
   <!-- Detail pop-up -->
   <div id="detail-modal" class="modal" hidden>
